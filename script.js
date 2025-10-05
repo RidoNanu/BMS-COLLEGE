@@ -13,10 +13,10 @@ class AdminDashboard {
     }
 
     setupEventListeners() {
-        // Quick Actions
-        document.querySelectorAll('.action-btn').forEach(btn => {
+        // Quick Actions (dashboard only)
+        document.querySelectorAll('.quick-actions .action-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                this.handleQuickAction(e.target.closest('.action-btn'));
+                this.handleQuickAction(e.currentTarget);
             });
         });
 
@@ -347,18 +347,20 @@ class AdminDashboard {
     }
 
     handleQuickAction(button) {
-        const action = button.querySelector('span').textContent;
+        const action = button.querySelector('span')?.textContent?.trim();
         console.log(`Quick action: ${action}`);
         
         switch (action) {
             case 'Add New Room':
-                this.showModal('Add New Room', this.getAddRoomForm());
+                // Navigate to Rooms page for full management
+                window.location.href = 'rooms.html';
                 break;
             case 'Create Booking':
                 this.showModal('Create Booking', this.getCreateBookingForm());
                 break;
             case 'Generate Report':
-                this.navigateToPage('reports');
+                // Navigate to Reports builder
+                window.location.href = 'reports.html';
                 break;
             case 'System Settings':
                 this.showModal('System Settings', this.getSettingsForm());
