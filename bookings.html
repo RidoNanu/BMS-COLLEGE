@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings Management - Teacher Booking System Admin</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduBook Admin</span>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="bookings.html" class="nav-link active">
+                    <i class="fas fa-calendar-check"></i>
+                    Bookings
+                </a>
+                <a href="analytics.html" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    Analytics
+                </a>
+                <a href="reports.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    Reports
+                </a>
+                <a href="rooms.html" class="nav-link">
+                    <i class="fas fa-door-open"></i>
+                    Rooms
+                </a>
+            </nav>
+            <div class="user-profile">
+                <img src="assets/admin-profile.jpg" alt="Admin" class="profile-img">
+                <span class="user-name">Admin User</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page active">
+            <div class="page-header">
+                <h1>All Bookings Management</h1>
+                <p>Comprehensive booking overview with advanced filtering</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label>Date Range</label>
+                    <input type="date" class="filter-input" id="startDate">
+                    <input type="date" class="filter-input" id="endDate">
+                </div>
+                <div class="filter-group">
+                    <label>Room</label>
+                    <select class="filter-select" id="roomFilter">
+                        <option>All Rooms</option>
+                        <option>Room 101</option>
+                        <option>Room 102</option>
+                        <option>Room 201</option>
+                        <option>Room 202</option>
+                        <option>Room 301</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select class="filter-select" id="statusFilter">
+                        <option>All Status</option>
+                        <option>Confirmed</option>
+                        <option>Pending</option>
+                        <option>Cancelled</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Teacher</label>
+                    <select class="filter-select" id="teacherFilter">
+                        <option>All Teachers</option>
+                        <option>Dr. Sarah Smith</option>
+                        <option>Prof. John Doe</option>
+                        <option>Dr. Emily Brown</option>
+                        <option>Prof. Michael Johnson</option>
+                    </select>
+                </div>
+                <button class="filter-btn" onclick="applyFilters()">
+                    <i class="fas fa-search"></i>
+                    Apply Filters
+                </button>
+                <button class="filter-btn secondary" onclick="clearFilters()">
+                    <i class="fas fa-times"></i>
+                    Clear
+                </button>
+            </div>
+
+            <!-- Bookings Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Bookings List</h3>
+                    <div class="table-actions">
+                        <button class="btn-primary" onclick="showCreateBookingModal()">
+                            <i class="fas fa-plus"></i>
+                            New Booking
+                        </button>
+                        <button class="btn-secondary" onclick="exportBookings()">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+                <table class="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAll">
+                            </th>
+                            <th onclick="sortTable('id')">Booking ID <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable('teacher')">Teacher <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable('room')">Room <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable('date')">Date & Time <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable('duration')">Duration <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable('status')">Status <i class="fas fa-sort"></i></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody">
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>#BK001</td>
+                            <td>Dr. Sarah Smith</td>
+                            <td>Room 201</td>
+                            <td>Dec 15, 2024 2:00 PM</td>
+                            <td>2 hours</td>
+                            <td><span class="status confirmed">Confirmed</span></td>
+                            <td>
+                                <button class="action-icon" onclick="editBooking('BK001')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-icon" onclick="viewBooking('BK001')" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-icon" onclick="deleteBooking('BK001')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>#BK002</td>
+                            <td>Prof. John Doe</td>
+                            <td>Room 105</td>
+                            <td>Dec 15, 2024 10:00 AM</td>
+                            <td>1.5 hours</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td>
+                                <button class="action-icon" onclick="editBooking('BK002')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-icon" onclick="viewBooking('BK002')" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-icon" onclick="deleteBooking('BK002')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>#BK003</td>
+                            <td>Dr. Emily Brown</td>
+                            <td>Room 301</td>
+                            <td>Dec 16, 2024 9:00 AM</td>
+                            <td>3 hours</td>
+                            <td><span class="status confirmed">Confirmed</span></td>
+                            <td>
+                                <button class="action-icon" onclick="editBooking('BK003')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-icon" onclick="viewBooking('BK003')" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-icon" onclick="deleteBooking('BK003')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>#BK004</td>
+                            <td>Prof. Michael Johnson</td>
+                            <td>Room 102</td>
+                            <td>Dec 16, 2024 1:00 PM</td>
+                            <td>2.5 hours</td>
+                            <td><span class="status cancelled">Cancelled</span></td>
+                            <td>
+                                <button class="action-icon" onclick="editBooking('BK004')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-icon" onclick="viewBooking('BK004')" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-icon" onclick="deleteBooking('BK004')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>#BK005</td>
+                            <td>Dr. Lisa Wilson</td>
+                            <td>Room 201</td>
+                            <td>Dec 17, 2024 11:00 AM</td>
+                            <td>1 hour</td>
+                            <td><span class="status confirmed">Confirmed</span></td>
+                            <td>
+                                <button class="action-icon" onclick="editBooking('BK005')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-icon" onclick="viewBooking('BK005')" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-icon" onclick="deleteBooking('BK005')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn" onclick="previousPage()">
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+                <span class="page-numbers">
+                    <button class="page-number active" onclick="goToPage(1)">1</button>
+                    <button class="page-number" onclick="goToPage(2)">2</button>
+                    <button class="page-number" onclick="goToPage(3)">3</button>
+                    <span class="page-ellipsis">...</span>
+                    <button class="page-number" onclick="goToPage(10)">10</button>
+                </span>
+                <button class="page-btn" onclick="nextPage()">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Bulk Actions -->
+            <div class="bulk-actions" id="bulkActions" style="display: none;">
+                <div class="bulk-actions-content">
+                    <span id="selectedCount">0 items selected</span>
+                    <div class="bulk-buttons">
+                        <button class="btn-secondary" onclick="bulkApprove()">
+                            <i class="fas fa-check"></i>
+                            Approve Selected
+                        </button>
+                        <button class="btn-secondary" onclick="bulkCancel()">
+                            <i class="fas fa-times"></i>
+                            Cancel Selected
+                        </button>
+                        <button class="btn-outline" onclick="bulkDelete()">
+                            <i class="fas fa-trash"></i>
+                            Delete Selected
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4></h4>
+                <p>Comprehensive classroom booking and management system</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="bookings.html">Bookings</a></li>
+                    <li><a href="analytics.html">Analytics</a></li>
+                    <li><a href="reports.html">Reports</a></li>
+                    <li><a href="rooms.html">Rooms</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Documentation</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>System Status</h4>
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span>All Systems Operational</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Bookings specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeBookingsPage();
+        });
+
+        function initializeBookingsPage() {
+            // Set default date range (today)
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').value = today;
+            document.getElementById('endDate').value = today;
+
+            // Initialize checkboxes
+            setupCheckboxHandlers();
+        }
+
+        function setupCheckboxHandlers() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+
+            selectAll.addEventListener('change', function() {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+                updateBulkActions();
+            });
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateBulkActions);
+            });
+        }
+
+        function updateBulkActions() {
+            const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            const bulkActions = document.getElementById('bulkActions');
+            const selectedCount = document.getElementById('selectedCount');
+
+            if (checkedBoxes.length > 0) {
+                bulkActions.style.display = 'block';
+                selectedCount.textContent = `${checkedBoxes.length} items selected`;
+            } else {
+                bulkActions.style.display = 'none';
+            }
+        }
+
+        function applyFilters() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const room = document.getElementById('roomFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const teacher = document.getElementById('teacherFilter').value;
+
+            console.log('Applying filters:', { startDate, endDate, room, status, teacher });
+            
+            // Show loading state
+            showNotification('Applying filters...', 'info');
+            
+            // Simulate filter application
+            setTimeout(() => {
+                showNotification('Filters applied successfully', 'success');
+            }, 1000);
+        }
+
+        function clearFilters() {
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('roomFilter').value = 'All Rooms';
+            document.getElementById('statusFilter').value = 'All Status';
+            document.getElementById('teacherFilter').value = 'All Teachers';
+            
+            showNotification('Filters cleared', 'info');
+        }
+
+        function sortTable(column) {
+            console.log('Sorting by:', column);
+            showNotification(`Sorting by ${column}`, 'info');
+        }
+
+        function editBooking(bookingId) {
+            console.log('Editing booking:', bookingId);
+            showModal(`Edit Booking ${bookingId}`, getEditBookingForm(bookingId));
+        }
+
+        function viewBooking(bookingId) {
+            console.log('Viewing booking:', bookingId);
+            showModal(`Booking Details ${bookingId}`, getViewBookingForm(bookingId));
+        }
+
+        function deleteBooking(bookingId) {
+            if (confirm(`Are you sure you want to delete booking ${bookingId}?`)) {
+                console.log('Deleting booking:', bookingId);
+                showNotification(`Booking ${bookingId} deleted successfully`, 'success');
+            }
+        }
+
+        function showCreateBookingModal() {
+            showModal('Create New Booking', getCreateBookingForm());
+        }
+
+        function exportBookings() {
+            showNotification('Exporting bookings...', 'info');
+            setTimeout(() => {
+                showNotification('Bookings exported successfully', 'success');
+            }, 2000);
+        }
+
+        function bulkApprove() {
+            const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            showNotification(`Approved ${checkedBoxes.length} bookings`, 'success');
+        }
+
+        function bulkCancel() {
+            const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            showNotification(`Cancelled ${checkedBoxes.length} bookings`, 'success');
+        }
+
+        function bulkDelete() {
+            const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            if (confirm(`Are you sure you want to delete ${checkedBoxes.length} bookings?`)) {
+                showNotification(`Deleted ${checkedBoxes.length} bookings`, 'success');
+            }
+        }
+
+        function previousPage() {
+            console.log('Previous page');
+        }
+
+        function nextPage() {
+            console.log('Next page');
+        }
+
+        function goToPage(page) {
+            console.log('Go to page:', page);
+        }
+    </script>
+</body>
+</html>

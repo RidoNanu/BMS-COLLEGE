@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rooms Management - Teacher Booking System Admin</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduBook Admin</span>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="bookings.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    Bookings
+                </a>
+                <a href="analytics.html" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    Analytics
+                </a>
+                <a href="reports.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    Reports
+                </a>
+                <a href="rooms.html" class="nav-link active">
+                    <i class="fas fa-door-open"></i>
+                    Rooms
+                </a>
+            </nav>
+            <div class="user-profile">
+                <img src="assets/admin-profile.jpg" alt="Admin" class="profile-img">
+                <span class="user-name">Admin User</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page active">
+            <div class="page-header">
+                <h1>Rooms Management</h1>
+                <p>Facility database and maintenance controls</p>
+            </div>
+
+            <!-- Room Actions -->
+            <div class="room-actions">
+                <button class="btn-primary" onclick="showAddRoomModal()">
+                    <i class="fas fa-plus"></i>
+                    Add New Room
+                </button>
+                <button class="btn-secondary" onclick="exportRoomsList()">
+                    <i class="fas fa-download"></i>
+                    Export List
+                </button>
+                <button class="btn-outline" onclick="showBulkActions()">
+                    <i class="fas fa-tasks"></i>
+                    Bulk Actions
+                </button>
+                <div class="view-controls">
+                    <button class="view-btn active" onclick="switchView('grid')" id="gridView">
+                        <i class="fas fa-th"></i>
+                        Grid
+                    </button>
+                    <button class="view-btn" onclick="switchView('list')" id="listView">
+                        <i class="fas fa-list"></i>
+                        List
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="room-filters">
+                <div class="filter-group">
+                    <label>Search Rooms</label>
+                    <input type="text" class="filter-input" placeholder="Search by room number, capacity, or equipment..." id="roomSearch">
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="available">Available</option>
+                        <option value="occupied">Occupied</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="reserved">Reserved</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Capacity</label>
+                    <select class="filter-select" id="capacityFilter">
+                        <option value="all">All Capacities</option>
+                        <option value="small">Small (1-20)</option>
+                        <option value="medium">Medium (21-40)</option>
+                        <option value="large">Large (41+)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Equipment</label>
+                    <select class="filter-select" id="equipmentFilter">
+                        <option value="all">All Equipment</option>
+                        <option value="projector">Projector</option>
+                        <option value="smartboard">Smart Board</option>
+                        <option value="sound">Sound System</option>
+                        <option value="wifi">WiFi</option>
+                    </select>
+                </div>
+                <button class="filter-btn" onclick="applyRoomFilters()">
+                    <i class="fas fa-search"></i>
+                    Apply
+                </button>
+            </div>
+
+            <!-- Rooms Grid View -->
+            <div class="rooms-grid" id="roomsGrid">
+                <div class="room-card">
+                    <div class="room-header">
+                        <h3>Room 101</h3>
+                        <span class="room-status available">Available</span>
+                    </div>
+                    <div class="room-image">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="room-details">
+                        <p><i class="fas fa-users"></i> <strong>Capacity:</strong> 30</p>
+                        <p><i class="fas fa-desktop"></i> <strong>Equipment:</strong> Projector, Whiteboard</p>
+                        <p><i class="fas fa-wifi"></i> <strong>WiFi:</strong> Available</p>
+                        <p><i class="fas fa-wheelchair"></i> <strong>Accessibility:</strong> Yes</p>
+                        <p><i class="fas fa-clock"></i> <strong>Next Booking:</strong> 2:00 PM</p>
+                    </div>
+                    <div class="room-actions">
+                        <button class="room-btn" onclick="editRoom('101')">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="room-btn" onclick="viewRoomSchedule('101')">
+                            <i class="fas fa-calendar"></i>
+                            Schedule
+                        </button>
+                        <button class="room-btn" onclick="reportMaintenance('101')">
+                            <i class="fas fa-tools"></i>
+                            Maintenance
+                        </button>
+                    </div>
+                </div>
+
+                <div class="room-card">
+                    <div class="room-header">
+                        <h3>Room 102</h3>
+                        <span class="room-status occupied">Occupied</span>
+                    </div>
+                    <div class="room-image">
+                        <i class="fas fa-door-closed"></i>
+                    </div>
+                    <div class="room-details">
+                        <p><i class="fas fa-users"></i> <strong>Capacity:</strong> 25</p>
+                        <p><i class="fas fa-desktop"></i> <strong>Equipment:</strong> Smart Board</p>
+                        <p><i class="fas fa-wifi"></i> <strong>WiFi:</strong> Available</p>
+                        <p><i class="fas fa-wheelchair"></i> <strong>Accessibility:</strong> Yes</p>
+                        <p><i class="fas fa-clock"></i> <strong>Current Booking:</strong> Dr. Smith</p>
+                    </div>
+                    <div class="room-actions">
+                        <button class="room-btn" onclick="editRoom('102')">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="room-btn" onclick="viewRoomSchedule('102')">
+                            <i class="fas fa-calendar"></i>
+                            Schedule
+                        </button>
+                        <button class="room-btn" onclick="reportMaintenance('102')">
+                            <i class="fas fa-tools"></i>
+                            Maintenance
+                        </button>
+                    </div>
+                </div>
+
+                <div class="room-card">
+                    <div class="room-header">
+                        <h3>Room 201</h3>
+                        <span class="room-status maintenance">Maintenance</span>
+                    </div>
+                    <div class="room-image">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="room-details">
+                        <p><i class="fas fa-users"></i> <strong>Capacity:</strong> 40</p>
+                        <p><i class="fas fa-desktop"></i> <strong>Equipment:</strong> Projector, Sound System</p>
+                        <p><i class="fas fa-wifi"></i> <strong>WiFi:</strong> Available</p>
+                        <p><i class="fas fa-wheelchair"></i> <strong>Accessibility:</strong> Yes</p>
+                        <p><i class="fas fa-exclamation-triangle"></i> <strong>Issue:</strong> AC Repair</p>
+                    </div>
+                    <div class="room-actions">
+                        <button class="room-btn" onclick="editRoom('201')">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="room-btn" onclick="viewRoomSchedule('201')">
+                            <i class="fas fa-calendar"></i>
+                            Schedule
+                        </button>
+                        <button class="room-btn" onclick="reportMaintenance('201')">
+                            <i class="fas fa-tools"></i>
+                            Maintenance
+                        </button>
+                    </div>
+                </div>
+
+                <div class="room-card">
+                    <div class="room-header">
+                        <h3>Room 202</h3>
+                        <span class="room-status available">Available</span>
+                    </div>
+                    <div class="room-image">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="room-details">
+                        <p><i class="fas fa-users"></i> <strong>Capacity:</strong> 20</p>
+                        <p><i class="fas fa-desktop"></i> <strong>Equipment:</strong> Whiteboard</p>
+                        <p><i class="fas fa-wifi"></i> <strong>WiFi:</strong> Available</p>
+                        <p><i class="fas fa-wheelchair"></i> <strong>Accessibility:</strong> No</p>
+                        <p><i class="fas fa-clock"></i> <strong>Next Booking:</strong> 4:00 PM</p>
+                    </div>
+                    <div class="room-actions">
+                        <button class="room-btn" onclick="editRoom('202')">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="room-btn" onclick="viewRoomSchedule('202')">
+                            <i class="fas fa-calendar"></i>
+                            Schedule
+                        </button>
+                        <button class="room-btn" onclick="reportMaintenance('202')">
+                            <i class="fas fa-tools"></i>
+                            Maintenance
+                        </button>
+                    </div>
+                </div>
+
+                <div class="room-card">
+                    <div class="room-header">
+                        <h3>Room 301</h3>
+                        <span class="room-status reserved">Reserved</span>
+                    </div>
+                    <div class="room-image">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="room-details">
+                        <p><i class="fas fa-users"></i> <strong>Capacity:</strong> 50</p>
+                        <p><i class="fas fa-desktop"></i> <strong>Equipment:</strong> Projector, Sound, Smart Board</p>
+                        <p><i class="fas fa-wifi"></i> <strong>WiFi:</strong> Available</p>
+                        <p><i class="fas fa-wheelchair"></i> <strong>Accessibility:</strong> Yes</p>
+                        <p><i class="fas fa-calendar"></i> <strong>Reserved for:</strong> Conference</p>
+                    </div>
+                    <div class="room-actions">
+                        <button class="room-btn" onclick="editRoom('301')">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="room-btn" onclick="viewRoomSchedule('301')">
+                            <i class="fas fa-calendar"></i>
+                            Schedule
+                        </button>
+                        <button class="room-btn" onclick="reportMaintenance('301')">
+                            <i class="fas fa-tools"></i>
+                            Maintenance
+                        </button>
+                    </div>
+                </div>
+
+                <div class="room-card">
+                    <div class="room-header">
+                        <h3>Room 302</h3>
+                        <span class="room-status available">Available</span>
+                    </div>
+                    <div class="room-image">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="room-details">
+                        <p><i class="fas fa-users"></i> <strong>Capacity:</strong> 35</p>
+                        <p><i class="fas fa-desktop"></i> <strong>Equipment:</strong> Projector, Whiteboard</p>
+                        <p><i class="fas fa-wifi"></i> <strong>WiFi:</strong> Available</p>
+                        <p><i class="fas fa-wheelchair"></i> <strong>Accessibility:</strong> Yes</p>
+                        <p><i class="fas fa-clock"></i> <strong>Next Booking:</strong> Tomorrow 9:00 AM</p>
+                    </div>
+                    <div class="room-actions">
+                        <button class="room-btn" onclick="editRoom('302')">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="room-btn" onclick="viewRoomSchedule('302')">
+                            <i class="fas fa-calendar"></i>
+                            Schedule
+                        </button>
+                        <button class="room-btn" onclick="reportMaintenance('302')">
+                            <i class="fas fa-tools"></i>
+                            Maintenance
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rooms List View (Hidden by default) -->
+            <div class="rooms-list" id="roomsList" style="display: none;">
+                <div class="table-container">
+                    <table class="rooms-table">
+                        <thead>
+                            <tr>
+                                <th>Room</th>
+                                <th>Capacity</th>
+                                <th>Equipment</th>
+                                <th>Status</th>
+                                <th>Next Booking</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Room 101</td>
+                                <td>30</td>
+                                <td>Projector, Whiteboard</td>
+                                <td><span class="status available">Available</span></td>
+                                <td>2:00 PM Today</td>
+                                <td>
+                                    <button class="action-icon" onclick="editRoom('101')" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-icon" onclick="viewRoomSchedule('101')" title="Schedule">
+                                        <i class="fas fa-calendar"></i>
+                                    </button>
+                                    <button class="action-icon" onclick="reportMaintenance('101')" title="Maintenance">
+                                        <i class="fas fa-tools"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Room 102</td>
+                                <td>25</td>
+                                <td>Smart Board</td>
+                                <td><span class="status occupied">Occupied</span></td>
+                                <td>Dr. Smith (Current)</td>
+                                <td>
+                                    <button class="action-icon" onclick="editRoom('102')" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-icon" onclick="viewRoomSchedule('102')" title="Schedule">
+                                        <i class="fas fa-calendar"></i>
+                                    </button>
+                                    <button class="action-icon" onclick="reportMaintenance('102')" title="Maintenance">
+                                        <i class="fas fa-tools"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Maintenance Log -->
+            <div class="maintenance-section">
+                <div class="section-header">
+                    <h3>Recent Maintenance</h3>
+                    <button class="btn-outline" onclick="viewAllMaintenance()">
+                        <i class="fas fa-list"></i>
+                        View All
+                    </button>
+                </div>
+                <div class="maintenance-list">
+                    <div class="maintenance-item">
+                        <div class="maintenance-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="maintenance-content">
+                            <p><strong>Room 201</strong> - AC repair completed</p>
+                            <span class="maintenance-time">2 hours ago</span>
+                        </div>
+                        <span class="maintenance-status completed">Completed</span>
+                    </div>
+                    <div class="maintenance-item">
+                        <div class="maintenance-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="maintenance-content">
+                            <p><strong>Room 105</strong> - Projector not working</p>
+                            <span class="maintenance-time">1 day ago</span>
+                        </div>
+                        <span class="maintenance-status pending">Pending</span>
+                    </div>
+                    <div class="maintenance-item">
+                        <div class="maintenance-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="maintenance-content">
+                            <p><strong>Room 301</strong> - WiFi connectivity fixed</p>
+                            <span class="maintenance-time">3 days ago</span>
+                        </div>
+                        <span class="maintenance-status completed">Completed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4></h4>
+                <p>Comprehensive classroom booking and management system</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="bookings.html">Bookings</a></li>
+                    <li><a href="analytics.html">Analytics</a></li>
+                    <li><a href="reports.html">Reports</a></li>
+                    <li><a href="rooms.html">Rooms</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Documentation</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>System Status</h4>
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span>All Systems Operational</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Rooms specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeRoomsPage();
+        });
+
+        function initializeRoomsPage() {
+            // Set up search functionality
+            setupRoomSearch();
+            
+            // Set up filter functionality
+            setupRoomFilters();
+        }
+
+        function setupRoomSearch() {
+            const searchInput = document.getElementById('roomSearch');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                filterRooms(searchTerm);
+            });
+        }
+
+        function setupRoomFilters() {
+            const filters = ['statusFilter', 'capacityFilter', 'equipmentFilter'];
+            filters.forEach(filterId => {
+                document.getElementById(filterId).addEventListener('change', applyRoomFilters);
+            });
+        }
+
+        function switchView(viewType) {
+            const gridView = document.getElementById('roomsGrid');
+            const listView = document.getElementById('roomsList');
+            const gridBtn = document.getElementById('gridView');
+            const listBtn = document.getElementById('listView');
+
+            if (viewType === 'grid') {
+                gridView.style.display = 'grid';
+                listView.style.display = 'none';
+                gridBtn.classList.add('active');
+                listBtn.classList.remove('active');
+            } else {
+                gridView.style.display = 'none';
+                listView.style.display = 'block';
+                listBtn.classList.add('active');
+                gridBtn.classList.remove('active');
+            }
+        }
+
+        function applyRoomFilters() {
+            const status = document.getElementById('statusFilter').value;
+            const capacity = document.getElementById('capacityFilter').value;
+            const equipment = document.getElementById('equipmentFilter').value;
+
+            console.log('Applying room filters:', { status, capacity, equipment });
+            showNotification('Filters applied', 'info');
+        }
+
+        function filterRooms(searchTerm) {
+            const roomCards = document.querySelectorAll('.room-card');
+            roomCards.forEach(card => {
+                const roomText = card.textContent.toLowerCase();
+                if (roomText.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function showAddRoomModal() {
+            showModal('Add New Room', getAddRoomForm());
+        }
+
+        function editRoom(roomNumber) {
+            console.log('Editing room:', roomNumber);
+            showModal(`Edit Room ${roomNumber}`, getEditRoomForm(roomNumber));
+        }
+
+        function viewRoomSchedule(roomNumber) {
+            console.log('Viewing schedule for room:', roomNumber);
+            showModal(`Room ${roomNumber} Schedule`, getRoomScheduleForm(roomNumber));
+        }
+
+        function reportMaintenance(roomNumber) {
+            console.log('Reporting maintenance for room:', roomNumber);
+            showModal(`Report Maintenance - Room ${roomNumber}`, getMaintenanceForm(roomNumber));
+        }
+
+        function exportRoomsList() {
+            showNotification('Exporting rooms list...', 'info');
+            setTimeout(() => {
+                showNotification('Rooms list exported successfully', 'success');
+            }, 2000);
+        }
+
+        function showBulkActions() {
+            showModal('Bulk Actions', getBulkActionsForm());
+        }
+
+        function viewAllMaintenance() {
+            showModal('All Maintenance Records', getAllMaintenanceForm());
+        }
+    </script>
+</body>
+</html>
