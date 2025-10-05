@@ -1890,7 +1890,8 @@ body {
         flex-direction: column;
         gap: 0.75rem;
         align-items: flex-start;
-        border-radius: 12px;
+        border-radius: 0;
+        min-width: 800px; /* match table scroll width */
     }
 
     .table-actions {
