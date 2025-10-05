@@ -453,10 +453,13 @@ class AdminDashboard {
             this.showNotification(`Booking ${bookingId} deleted successfully`, 'success');
             
             // Remove from table
-            const row = document.querySelector(`td:contains("${bookingId}")`).closest('tr');
-            if (row) {
-                row.remove();
-            }
+            const rows = document.querySelectorAll('.bookings-table tbody tr');
+            rows.forEach(tr => {
+                const firstCell = tr.querySelector('td');
+                if (firstCell && firstCell.textContent.trim() === bookingId) {
+                    tr.remove();
+                }
+            });
         }
     }
 

@@ -334,6 +334,9 @@
 
             // Initialize checkboxes
             setupCheckboxHandlers();
+
+            // Initialize pagination interactions
+            setupPaginationHandlers();
         }
 
         function setupCheckboxHandlers() {
@@ -363,6 +366,20 @@
             } else {
                 bulkActions.style.display = 'none';
             }
+        }
+
+        function setupPaginationHandlers() {
+            const pageContainer = document.querySelector('.pagination .page-numbers');
+            if (!pageContainer) return;
+
+            pageContainer.querySelectorAll('.page-number').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const page = parseInt(btn.textContent.trim(), 10);
+                    if (!isNaN(page)) {
+                        goToPage(page);
+                    }
+                });
+            });
         }
 
         function applyFilters() {
@@ -444,14 +461,28 @@
         }
 
         function previousPage() {
-            console.log('Previous page');
+            const pages = Array.from(document.querySelectorAll('.pagination .page-number'));
+            const currentIndex = pages.findIndex(b => b.classList.contains('active'));
+            if (currentIndex > 0) {
+                pages[currentIndex - 1].click();
+            }
         }
 
         function nextPage() {
-            console.log('Next page');
+            const pages = Array.from(document.querySelectorAll('.pagination .page-number'));
+            const currentIndex = pages.findIndex(b => b.classList.contains('active'));
+            if (currentIndex !== -1 && currentIndex < pages.length - 1) {
+                pages[currentIndex + 1].click();
+            }
         }
 
         function goToPage(page) {
+            const pages = document.querySelectorAll('.pagination .page-number');
+            pages.forEach(btn => btn.classList.remove('active'));
+            pages.forEach(btn => {
+                const num = parseInt(btn.textContent.trim(), 10);
+                if (num === page) btn.classList.add('active');
+            });
             console.log('Go to page:', page);
         }
     </script>
